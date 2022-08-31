@@ -276,8 +276,8 @@ df['ratio'] = df['f_value'] / df['h_value']
 # In[210]:
 
 
-print(df.loc[df['ratio'] > 5].shape[0], round((df.loc[df['ratio'] > 5].shape[0] / df.shape[0]* 100), 1))
-print(df.loc[df['ratio'] < 0.2].shape[0], round((df.loc[df['ratio'] < 0.2].shape[0] / df.shape[0]* 100), 1))
+print(df.loc[df['ratio'] > 4].shape[0], round((df.loc[df['ratio'] > 4].shape[0] / df.shape[0]* 100), 1))
+print(df.loc[df['ratio'] < 0.25].shape[0], round((df.loc[df['ratio'] < 0.25].shape[0] / df.shape[0]* 100), 1))
 
 
 # In[212]:
