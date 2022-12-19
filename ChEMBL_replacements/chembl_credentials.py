@@ -1,0 +1,5 @@
+database="chembl_28"
+user="chembl"
+password="chembl123"
+host="127.0.0.1"
+port="5432"
