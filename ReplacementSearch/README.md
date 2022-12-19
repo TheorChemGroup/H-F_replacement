@@ -21,7 +21,7 @@ pip install -r requirements.txt
 ```sh 
 jupyter notebook Data_Analysis.ipynb
 ```
-2. Run all cells in notebook
+2. Run all cells in the notebook
 
 ## File organization
 
