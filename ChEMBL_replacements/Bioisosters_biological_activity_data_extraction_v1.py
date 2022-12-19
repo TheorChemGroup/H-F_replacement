@@ -5,25 +5,33 @@
 
 # [Data base](https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_28/)
 
-# In[1]:
+# In[41]:
 
 
 import re
 import pandas as pd
 pd.set_option('display.max_columns', None)
 import subprocess
-
+import chembl_credentials
+import os
 import psycopg2
 import psycopg2.extras
 
-CONNECTION = psycopg2.connect(database="chembl_28", 
-                              user="chembl", 
-                              password="chembl123", 
-                              host="127.0.0.1", 
-                              port="5432")
+
+CONNECTION = psycopg2.connect(database=chembl_credentials.database, 
+                              user=chembl_credentials.user, 
+                              password=chembl_credentials.password, 
+                              host=chembl_credentials.host, 
+                              port=chembl_credentials.port)
 
 
-# In[2]:
+# In[42]:
+
+
+os.makedirs("./alg1_files", exist_ok=True)
+
+
+# In[43]:
 
 
 QUERY_GET_MOLECULES = """
@@ -56,7 +64,7 @@ def get_molecules_with_fluorine(offset=0, limit='ALL'):
     return rows
 
 
-# In[3]:
+# In[9]:
 
 
 REGEX_FLUORINE = re.compile(r'(\(F\)|F(?![emlr])|F$)')
@@ -66,7 +74,7 @@ def get_all_fluorine_indexes(smiles):
     return finds
 
 
-# In[4]:
+# In[10]:
 
 
 def gen_next_smiles(finds, smiles):
@@ -75,7 +83,7 @@ def gen_next_smiles(finds, smiles):
         yield next_smiles
 
 
-# In[5]:
+# In[11]:
 
 
 def get_inchikey_by_smiles(smiles):
@@ -83,7 +91,7 @@ def get_inchikey_by_smiles(smiles):
     return list_files.stdout.decode('utf-8').rstrip()
 
 
-# In[6]:
+# In[12]:
 
 
 QUERY_GET_MOLECULES_BY_INCHIKEY_AND_ASSAYS = """
@@ -125,7 +133,7 @@ def get_molecule_by_inchikey_where_in_assays(inchikey, assays):
     return molecule
 
 
-# In[7]:
+# In[13]:
 
 
 QUERY_GET_MOLECULE_INFO = """
@@ -167,7 +175,7 @@ def get_molecule_info(molregno, assay_id, standard_type):
     return row
 
 
-# In[8]:
+# In[ ]:
 
 
 COLUMNS = ('f_id', 'f_chembl',
@@ -208,7 +216,7 @@ def get_molecules_with_other_smiles(molecules):
     return molecules_info
 
 
-# In[9]:
+# In[ ]:
 
 
 import csv
@@ -220,7 +228,7 @@ def to_csv(obj, filename):
             csv_out.writerow(row)
 
 
-# In[13]:
+# In[ ]:
 
 
 def main(molecules, offset=0):
@@ -239,7 +247,7 @@ def main(molecules, offset=0):
     mol.to_csv(f'alg1_files/mol_{i*batch_size}_{len(molecules)-1}.csv')
 
 
-# In[11]:
+# In[ ]:
 
 
 molecules = get_molecules_with_fluorine()

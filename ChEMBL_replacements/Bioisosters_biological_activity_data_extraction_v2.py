@@ -5,7 +5,7 @@
 
 # [Data base](https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_28/)
 
-# In[1]:
+# In[ ]:
 
 
 import re
@@ -14,19 +14,28 @@ pd.set_option('display.max_columns', None)
 import subprocess
 import psycopg2
 import psycopg2.extras
-
 import glob
-
 import os
-
-CONNECTION = psycopg2.connect(database="chembl_28", 
-                              user="chembl", 
-                              password="chembl123", 
-                              host="127.0.0.1", 
-                              port="5432")
+import chembl_credentials
 
 
-# In[2]:
+CONNECTION = psycopg2.connect(database=chembl_credentials.database, 
+                              user=chembl_credentials.user, 
+                              password=chembl_credentials.password, 
+                              host=chembl_credentials.host, 
+                              port=chembl_credentials.port)
+
+
+# In[ ]:
+
+
+os.makedirs("./molfiles", exist_ok=True)
+os.makedirs("./sdf", exist_ok=True)
+os.makedirs("./smi", exist_ok=True)
+os.makedirs("./alg2_files", exist_ok=True)
+
+
+# In[ ]:
 
 
 QUERY_GET_ASSAYS = """
@@ -46,13 +55,13 @@ def get_assays():
     return rows
 
 
-# In[3]:
+# In[ ]:
 
 
 assays = list(set(get_assays()))
 
 
-# In[3]:
+# In[ ]:
 
 
 QUERY_GET_LIST_OF_MOLECULES_FROM_ASSAY = """
@@ -72,7 +81,7 @@ def get_list_of_molecules_from_assay(assay_id):
     return molecules
 
 
-# In[4]:
+# In[ ]:
 
 
 QUERY_GET_MOLECULE_WITH_FLUORINE_IN_ASSAY = """
@@ -93,7 +102,7 @@ def get_molecule_with_fluorine_in_assay(molregno):
     return molecules
 
 
-# In[5]:
+# In[ ]:
 
 
 QUERY_GET_MOLFILE_BY_MOLREGNO = """
@@ -113,7 +122,7 @@ def get_molfile_by_molregno(molregno):
     return row
 
 
-# In[6]:
+# In[ ]:
 
 
 def save_as(molregno):
@@ -121,7 +130,7 @@ def save_as(molregno):
         print(get_molfile_by_molregno(molregno)[0], file=file)
 
 
-# In[7]:
+# In[ ]:
 
 
 def molfile_with_fluorine_in_all_assays(assays):
@@ -139,7 +148,7 @@ def molfile_with_fluorine_in_all_assays(assays):
     return molecules_with_fluorine
 
 
-# In[8]:
+# In[ ]:
 
 
 def all_molfiles(assays, offset=0):
@@ -160,7 +169,7 @@ def all_molfiles(assays, offset=0):
 all_molfiles(assays)
 
 
-# In[9]:
+# In[ ]:
 
 
 def get_sdf_by_mol(list_of_molregno):
@@ -168,7 +177,29 @@ def get_sdf_by_mol(list_of_molregno):
         subprocess.run(['f2h.exe', 'molfiles/' + str(molregno) + '.mol', 'sdf/' + str(molregno) + '.sdf'])
 
 
-# In[10]:
+# In[ ]:
+
+
+list_of_molregno = []
+for root, dirs, files in os.walk("./molfiles"):  
+    for filename in files:
+        if filename.count('.mol') == 1:
+            list_of_molregno.append(filename[:-4])
+
+
+# In[ ]:
+
+
+len(list_of_molregno)
+
+
+# In[ ]:
+
+
+get_sdf_by_mol(list_of_molregno)
+
+
+# In[ ]:
 
 
 def gen_inchikey_by_sdf(sdf_file):
@@ -179,7 +210,7 @@ def gen_inchikey_by_sdf(sdf_file):
     return set(inchikey_list)
 
 
-# In[11]:
+# In[ ]:
 
 
 QUERY_GET_F_MOLECULE_BY_MOLREGNO = """
@@ -220,7 +251,7 @@ def get_f_molecule_by_molregno(molregno):
     return molecule
 
 
-# In[12]:
+# In[ ]:
 
 
 QUERY_GET_MOLECULES_BY_INCHIKEY_AND_ASSAYS = """
@@ -263,7 +294,7 @@ def get_molecule_by_inchikey_where_in_assays(assay_id, inchikey, standard_type):
     return molecule
 
 
-# In[13]:
+# In[ ]:
 
 
 COLUMNS = ('f_id', 'f_chembl',
@@ -311,7 +342,7 @@ def new_alg(list_of_f_molregno):
     return data
 
 
-# In[14]:
+# In[ ]:
 
 
 import csv
@@ -324,7 +355,7 @@ def to_csv(obj, filename):
             csv_out.writerow(row)
 
 
-# In[15]:
+# In[ ]:
 
 
 def main(molecules, offset=0):
@@ -344,16 +375,16 @@ def main(molecules, offset=0):
     print(f'saved alg2_files/mol_{i*batch_size}_{len(molecules)-1}.csv')
 
 
-# In[16]:
+# In[ ]:
 
 
-moleculs_with_fluorine = []
+molecules_with_fluorine = []
 for filename in glob.iglob('sdf/*.sdf'):
-    moleculs_with_fluorine.append(filename[4:-4])
+    molecules_with_fluorine.append(filename[4:-4])
 
 
 # In[ ]:
 
 
-main(moleculs_with_fluorine)
+main(molecules_with_fluorine)
 
