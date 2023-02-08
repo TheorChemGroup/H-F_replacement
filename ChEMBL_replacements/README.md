@@ -22,13 +22,13 @@ pip install -r requirements.txt
 1. Replace the data in the `chembl_credentials.py` file with your database connection parameters.
 2. Run 3 files sequentially: 
 ```sh 
-python3 Bioisosters_biological_activity_data_extraction_v1.py 
+python3 ChEMBL_data_collection_v1.py 
 ```
 ```sh 
-python3 Bioisosters_biological_activity_data_extraction_v2.py 
+python3 ChEMBL_data_collection_v2.py 
 ```
 ```sh 
-python3 Data_cleansing.py 
+python3 ChEMBL_data_cleaning.py 
 ```
 
 ## File organization
@@ -37,8 +37,8 @@ python3 Data_cleansing.py
 | ------ | ------ |
 | `requirements.txt` | a file with requirements for running algorithm files |
 | `chembl_credentials.py` | a file with database connection parameters (port, host, user, password, database) |
-| `Bioisosters_biological_activity_data_extraction_v1.py` | a python script executing Algorithm 1 (METHODS)|
-| `Bioisosters_biological_activity_data_extraction_v2.py` | a python script executing Algorithm 2 (METHODS)|
-| `Data_cleansing.py` | a python script that cleans the data and builds a reliable dataset (METHODS)|
+| `ChEMBL_data_collection_v1.py` | a python script executing Algorithm 1 (METHODS)|
+| `ChEMBL_data_collection_v2.py` | a python script executing Algorithm 2 (METHODS)|
+| `ChEMBL_data_cleaning.py` | a python script that cleans the data and builds a reliable dataset (METHODS)|
 | `f2h.exe` | a Windows program taking a MOL file of F-substituted ligand and producing an SDF file of H-substituted ligand; used in Algorithm_2.py  |
 | `ReliableDataSet.csv` | a reliable dataset |
